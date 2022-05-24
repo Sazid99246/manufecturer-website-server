@@ -15,8 +15,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try{
         await client.connect();
-        const productCollection = client.db("rainbow-compouters").collection("products");
-        
+        const productCollection = client.db("rainbow-computers").collection("products");
+        const reviewCollection = client.db("rainbow-computers").collection("reviews")
+
         // get all the products
         app.get('/product', async(req, res)=>{
             const query = {};
@@ -24,11 +25,21 @@ async function run(){
             const products = await cursor.toArray();
             res.send(products)
         })
+
+        // get specific product by id
         app.get('/product/:id', async(req, res)=>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const result = await productCollection.findOne(query);
             res.send(result);
+        })
+
+        // get all reviews
+        app.get('/review', async(req, res)=>{
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews =await cursor.toArray();
+            res.send(reviews)
         })
     }
     finally{
