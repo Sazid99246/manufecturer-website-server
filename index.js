@@ -17,6 +17,7 @@ async function run(){
         await client.connect();
         const productCollection = client.db("rainbow-computers").collection("products");
         const reviewCollection = client.db("rainbow-computers").collection("reviews")
+        const orderCollection = client.db("rainbow-computers").collection("orders");
 
         // get all the products
         app.get('/product', async(req, res)=>{
@@ -49,6 +50,14 @@ async function run(){
             const result = await reviewCollection.findOne(query);
             res.send(result);
         })
+
+        // send order to the server
+        app.post('/order', async(req, res)=>{
+            const order = req.body;
+            const result = orderCollection.insertOne(order);
+            res.send(result);
+        })
+
     }
     finally{
 
